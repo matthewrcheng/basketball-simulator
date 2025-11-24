@@ -113,7 +113,7 @@ class Team:
             color = get_color(pcolor)
             return Team(id=id, city=city, name=name, abbr=abbr, color=color, wins=wins, losses=losses,
                         championships=championships, stadium=stadium, conference=conference,
-                        division=division, budget=budget)
+                        division=division, budget=budget, players=None)
         else:
             return None
 

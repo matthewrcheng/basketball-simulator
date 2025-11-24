@@ -5,6 +5,7 @@ from enum import Enum
 from basketball.player import Player
 from .name_generator import random_name
 from .display import reset
+from .db import get_next_player_id, player_to_db
 
 class PossessionResult(Enum):
   SHOT = 1
@@ -219,7 +220,8 @@ def generate_new_players(draft_order, teams, next_id, ages=range(18,26)):
     heights = {'C':211,'PF':205,'SF':202,'SG':198,'PG':189}
     name, country = random_name()
     height = int(np.random.normal(heights[pos],7))
-    player = Player(player_id=next_id, name=name, age=random.choice(ages), height=height, number=random.choice(range(100)), 
+    id = get_next_player_id()
+    player = Player(player_id=id, name=name, age=random.choice(ages), height=height, number=random.choice(range(100)), 
                     form=random.choice(range(1,6)), position=pos, inner_attack=random_inner_stat(quality, pos), 
                     outer_attack=random_outer_stat(quality, pos), inner_defense=random_inner_stat(quality, pos), 
                     outer_defense=random_outer_stat(quality, pos), iq=random_stat(quality), passing=random_outer_stat(quality, pos), 
@@ -241,6 +243,7 @@ def generate_new_players(draft_order, teams, next_id, ages=range(18,26)):
     teams[draft_order[i]].players[player.position].append(player)
     new_players.pop(idx)
     print(f'Pick {i+1}: {player.name} {player.country.color}{player.country.name}{reset} {player.position} {player.print_height} ({player.age}) to {teams[draft_order[i]].color}{teams[draft_order[i]].name}{reset}, Stats: {player.inner_attack} {player.outer_attack} {player.inner_defense} {player.outer_defense} {player.iq} {player.passing} {player.physical}')
+    player_to_db(player)
   return next_id
 
 def determine_draft_order(df, teams: list):
